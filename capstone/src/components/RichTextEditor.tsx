@@ -4,8 +4,6 @@ import { useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
 import type { IJodit } from "jodit-react";
 
-import "jodit/es2015/jodit.min.css";
-
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
 interface RichTextEditorProps {
@@ -24,7 +22,6 @@ export default function RichTextEditor({
 
   const config = useMemo(
     () => ({
-    
       placeholder: placeholder,
       readonly: false, 
       height: 500, 
@@ -57,12 +54,10 @@ export default function RichTextEditor({
         "fullsize", 
       ],
 
-     
       uploader: {
         insertImageAsBase64URI: true, 
       },
 
-     
       link: {
         openInNewTab: true, 
       },
@@ -92,4 +87,3 @@ export default function RichTextEditor({
     </div>
   );
 }
-
