@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import Link from "next/link";
 import Container from "@/components/Container";
 import { usePosts } from "@/hooks/usePosts";
-import { getPopularPosts } from "@/lib/search";
 import PostCard from "@/components/memoized/PostCard";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 
@@ -18,7 +17,10 @@ export default function Home() {
   }, [allPosts]);
 
   const popularPosts = useMemo(() => {
-    return getPopularPosts(6); 
+    if (!allPosts || allPosts.length === 0) return [];
+    return [...allPosts]
+      .sort((a, b) => (b.views || 0) - (a.views || 0))
+      .slice(0, 6);
   }, [allPosts]); 
 
   return (

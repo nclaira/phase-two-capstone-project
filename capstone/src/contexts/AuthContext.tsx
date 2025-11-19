@@ -50,15 +50,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Signup function
   const handleSignup = async (name: string, email: string, password: string) => {
     try {
-      const { user: newUser, token } = await signupUser({
+      const { user: newUser } = await signupUser({
         name,
         email,
         password,
       });
 
-      saveAuthData(newUser, token);
-
-      setUser(newUser);
+      // Don't save auth data on signup - user needs to login
+      // User will be redirected to login page
     } catch (error) {
       throw error;
     }

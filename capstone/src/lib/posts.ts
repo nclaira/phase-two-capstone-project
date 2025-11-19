@@ -26,119 +26,124 @@ export function generateSlug(title: string): string {
 }
 
 
-export function getAllPosts(): Post[] {
-  if (typeof window === "undefined") return [];
-
-  const postsJson = localStorage.getItem("posts");
-  if (!postsJson) return [];
-
+export async function getAllPosts(): Promise<Post[]> {
   try {
-    const posts = JSON.parse(postsJson);
-    
-    return posts
-      .filter((post: Post) => post.status === "published")
-      .sort(
-        (a: Post, b: Post) =>
-          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-      );
-  } catch {
+    const response = await fetch('/api/posts?status=published');
+    if (!response.ok) {
+      throw new Error('Failed to fetch posts');
+    }
+    const posts = await response.json();
+    return posts;
+  } catch (error) {
+    console.error('Error fetching posts:', error);
     return [];
   }
 }
 
-export function getPostById(id: string): Post | null {
-  const posts = getAllPosts();
-  return posts.find((post) => post.id === id) || null;
+export async function getPostById(id: string): Promise<Post | null> {
+  try {
+    const response = await fetch(`/api/posts/${id}`);
+    if (!response.ok) {
+      if (response.status === 404) return null;
+      throw new Error('Failed to fetch post');
+    }
+    const post = await response.json();
+    return post;
+  } catch (error) {
+    console.error('Error fetching post:', error);
+    return null;
+  }
 }
 
-export function getPostBySlug(slug: string): Post | null {
-  const posts = getAllPosts();
-  return posts.find((post) => post.slug === slug) || null;
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  try {
+    const response = await fetch(`/api/posts/slug/${slug}`);
+    if (!response.ok) {
+      if (response.status === 404) return null;
+      throw new Error('Failed to fetch post');
+    }
+    const post = await response.json();
+    return post;
+  } catch (error) {
+    console.error('Error fetching post:', error);
+    return null;
+  }
 }
 
-export function getPostsByAuthor(authorId: string): Post[] {
-  const posts = getAllPosts();
-  return posts.filter((post) => post.authorId === authorId);
+export async function getPostsByAuthor(authorId: string): Promise<Post[]> {
+  try {
+    const response = await fetch(`/api/posts?authorId=${authorId}&status=published`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch posts');
+    }
+    const posts = await response.json();
+    return posts;
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return [];
+  }
 }
 
-export function getPostsByTag(tag: string): Post[] {
-  const posts = getAllPosts();
-  return posts.filter((post) =>
-    post.tags.some((t) => t.toLowerCase() === tag.toLowerCase())
-  );
+export async function getPostsByTag(tag: string): Promise<Post[]> {
+  try {
+    const response = await fetch(`/api/posts/tag/${encodeURIComponent(tag)}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch posts');
+    }
+    const posts = await response.json();
+    return posts;
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return [];
+  }
 }
 
-export function createPost(postData: Omit<Post, "id" | "slug" | "publishedAt" | "updatedAt">): Post {
-  if (typeof window === "undefined") {
-    throw new Error("Cannot create post on server side");
+export async function createPost(postData: Omit<Post, "id" | "slug" | "publishedAt" | "updatedAt">): Promise<Post> {
+  const response = await fetch('/api/posts', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(postData),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to create post');
   }
 
-  const posts = getAllPosts();
-  
-  const newPost: Post = {
-    ...postData,
-    id: `post-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-    slug: generateSlug(postData.title),
-    publishedAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    views: 0,
-    likes: 0,
-  };
-
-  const allPosts = JSON.parse(localStorage.getItem("posts") || "[]");
-  allPosts.push(newPost);
-  localStorage.setItem("posts", JSON.stringify(allPosts));
-
+  const newPost = await response.json();
   return newPost;
 }
 
-export function updatePost(id: string, updates: Partial<Post>): Post | null {
-  if (typeof window === "undefined") {
-    throw new Error("Cannot update post on server side");
+export async function updatePost(id: string, updates: Partial<Post>): Promise<Post | null> {
+  const response = await fetch(`/api/posts/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updates),
+  });
+
+  if (!response.ok) {
+    if (response.status === 404) return null;
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to update post');
   }
 
-  const allPosts = JSON.parse(localStorage.getItem("posts") || "[]");
-  const postIndex = allPosts.findIndex((post: Post) => post.id === id);
-
-  if (postIndex === -1) {
-    return null; // Post not found
-  }
-
-  // Update the post
-  const updatedPost: Post = {
-    ...allPosts[postIndex],
-    ...updates,
-    id, // Keep original ID
-    updatedAt: new Date().toISOString(),
-    // If title changed, update slug
-    slug: updates.title ? generateSlug(updates.title) : allPosts[postIndex].slug,
-  };
-
-  allPosts[postIndex] = updatedPost;
-  localStorage.setItem("posts", JSON.stringify(allPosts));
-
+  const updatedPost = await response.json();
   return updatedPost;
 }
 
 // Delete a post (soft delete - marks as draft instead of removing)
-export function deletePost(id: string): boolean {
-  if (typeof window === "undefined") {
-    throw new Error("Cannot delete post on server side");
+export async function deletePost(id: string): Promise<boolean> {
+  try {
+    const result = await updatePost(id, { status: 'draft' });
+    return result !== null;
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    return false;
   }
-
-  const allPosts = JSON.parse(localStorage.getItem("posts") || "[]");
-  const postIndex = allPosts.findIndex((post: Post) => post.id === id);
-
-  if (postIndex === -1) {
-    return false; // Post not found
-  }
-
-  // Soft delete: change status to draft instead of removing
-  allPosts[postIndex].status = "draft";
-  allPosts[postIndex].updatedAt = new Date().toISOString();
-  localStorage.setItem("posts", JSON.stringify(allPosts));
-
-  return true;
 }
 
 // Hard delete (completely remove from storage)
@@ -159,21 +164,30 @@ export function hardDeletePost(id: string): boolean {
 }
 
 // Increment post views
-export function incrementPostViews(id: string): void {
-  const post = getPostById(id);
-  if (post) {
-    updatePost(id, { views: (post.views || 0) + 1 });
+export async function incrementPostViews(id: string): Promise<void> {
+  try {
+    const post = await getPostById(id);
+    if (post) {
+      await updatePost(id, { views: (post.views || 0) + 1 });
+    }
+  } catch (error) {
+    console.error('Error incrementing post views:', error);
   }
 }
 
 // Get all tags from all posts
-export function getAllTags(): string[] {
-  const posts = getAllPosts();
-  const tagSet = new Set<string>();
-  
-  posts.forEach((post) => {
-    post.tags.forEach((tag) => tagSet.add(tag.toLowerCase()));
-  });
+export async function getAllTags(): Promise<string[]> {
+  try {
+    const posts = await getAllPosts();
+    const tagSet = new Set<string>();
+    
+    posts.forEach((post) => {
+      post.tags.forEach((tag) => tagSet.add(tag.toLowerCase()));
+    });
 
-  return Array.from(tagSet).sort();
+    return Array.from(tagSet).sort();
+  } catch (error) {
+    console.error('Error fetching tags:', error);
+    return [];
+  }
 }

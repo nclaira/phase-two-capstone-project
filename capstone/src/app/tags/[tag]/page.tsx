@@ -21,15 +21,24 @@ export default function TagPage() {
     loadAllTags();
   }, [decodedTag]);
 
-  const loadTagPosts = () => {
-    const tagPosts = getPostsByTag(decodedTag);
-    setPosts(tagPosts);
-    setIsLoading(false);
+  const loadTagPosts = async () => {
+    try {
+      const tagPosts = await getPostsByTag(decodedTag);
+      setPosts(tagPosts);
+    } catch (error) {
+      console.error('Error loading tag posts:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const loadAllTags = () => {
-    const tags = getAllTags();
-    setAllTags(tags);
+  const loadAllTags = async () => {
+    try {
+      const tags = await getAllTags();
+      setAllTags(tags);
+    } catch (error) {
+      console.error('Error loading tags:', error);
+    }
   };
 
   const formatDate = (dateString: string) => {

@@ -1,11 +1,11 @@
 import { getAllPosts, type Post } from "./posts";
 
-export function searchPosts(query: string): Post[] {
+export async function searchPosts(query: string): Promise<Post[]> {
   if (!query || query.trim() === "") {
     return []; 
   }
 
-  const allPosts = getAllPosts();
+  const allPosts = await getAllPosts();
   const searchTerm = query.toLowerCase().trim();
 
   return allPosts.filter((post) => {
@@ -39,11 +39,11 @@ function stripHtml(html: string): string {
   }
 }
 
-export function getRecommendedPosts(
+export async function getRecommendedPosts(
   excludePostId?: string,
   limit: number = 3
-): Post[] {
-  const allPosts = getAllPosts();
+): Promise<Post[]> {
+  const allPosts = await getAllPosts();
 
   const filteredPosts = excludePostId
     ? allPosts.filter((post) => post.id !== excludePostId)
@@ -54,16 +54,16 @@ export function getRecommendedPosts(
   return shuffled.slice(0, limit);
 }
 
-export function getPopularPosts(limit: number = 6): Post[] {
-  const allPosts = getAllPosts();
+export async function getPopularPosts(limit: number = 6): Promise<Post[]> {
+  const allPosts = await getAllPosts();
 
   return allPosts
     .sort((a, b) => (b.views || 0) - (a.views || 0))
     .slice(0, limit);
 }
 
-export function getLatestPosts(limit: number = 6): Post[] {
-  const allPosts = getAllPosts();
+export async function getLatestPosts(limit: number = 6): Promise<Post[]> {
+  const allPosts = await getAllPosts();
 
   return allPosts.slice(0, limit);
 }

@@ -50,7 +50,7 @@ export default function SignupPage() {
 
     try {
       await signup(name, email, password);
-      router.push("/");
+      router.push("/login");
     } catch (err) {
       setError("Signup failed. Please try again.");
     } finally {

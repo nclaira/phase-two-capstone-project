@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/components/Container";
 import { getRecommendedPosts } from "@/lib/search";
+import { type Post } from "@/lib/posts";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePostBySlug, useDeletePost, useUpdatePost, useIncrementPostViews } from "@/hooks/usePosts";
 import { useToggleLike, useHasUserLikedPost } from "@/hooks/useLikes";
@@ -35,8 +36,19 @@ export default function PostDetailPage() {
     post?.authorId || null
   );
 
-  const recommendedPosts = useMemo(() => {
-    return post ? getRecommendedPosts(post.id, 3) : [];
+  const [recommendedPosts, setRecommendedPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    if (post?.id) {
+      getRecommendedPosts(post.id, 3)
+        .then(setRecommendedPosts)
+        .catch((error) => {
+          console.error('Error loading recommended posts:', error);
+          setRecommendedPosts([]);
+        });
+    } else {
+      setRecommendedPosts([]);
+    }
   }, [post?.id]);
 
   useEffect(() => {

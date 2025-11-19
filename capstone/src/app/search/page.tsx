@@ -6,7 +6,8 @@ import Link from "next/link";
 import Image from "next/image";
 import Container from "@/components/Container";
 import SearchBar from "@/components/SearchBar";
-import { searchPosts, type Post } from "@/lib/posts";
+import { searchPosts } from "@/lib/search";
+import { type Post } from "@/lib/posts";
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
@@ -20,11 +21,19 @@ export default function SearchPage() {
     if (query.trim()) {
       setIsSearching(true);
     
-      setTimeout(() => {
-        const searchResults = searchPosts(query);
-        setResults(searchResults);
-        setIsSearching(false);
+      const searchTimeout = setTimeout(async () => {
+        try {
+          const searchResults = await searchPosts(query);
+          setResults(searchResults);
+        } catch (error) {
+          console.error('Error searching posts:', error);
+          setResults([]);
+        } finally {
+          setIsSearching(false);
+        }
       }, 300);
+
+      return () => clearTimeout(searchTimeout);
     } else {
       setResults([]);
       setIsSearching(false);

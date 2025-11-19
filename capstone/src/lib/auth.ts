@@ -24,47 +24,50 @@ export interface SignupData {
 export async function loginUser(
   credentials: LoginCredentials
 ): Promise<{ user: User; token: string }> {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const response = await fetch('/api/auth/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(credentials),
+  });
 
-  const mockUser: User = {
-    id: "1",
-    name: credentials.email.split("@")[0], // Use email prefix as name
-    email: credentials.email,
-    bio: "Welcome to Medium Clone!",
-    avatar: undefined,
-  };
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Login failed');
+  }
 
-  // Mock token 
-  const mockToken = "mock-jwt-token-" + Date.now();
-
+  const data = await response.json();
   return {
-    user: mockUser,
-    token: mockToken,
+    user: data.user,
+    token: data.token,
   };
 }
 
-// Function to simulate API call for signup
+// Function to call API for signup
 export async function signupUser(
   data: SignupData
 ): Promise<{ user: User; token: string }> {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const response = await fetch('/api/auth/signup', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
 
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Signup failed');
+  }
 
-  const mockUser: User = {
-    id: Date.now().toString(), 
-    name: data.name,
-    email: data.email,
-    bio: "New user on Medium Clone",
-    avatar: undefined,
-  };
-
-  const mockToken = "mock-jwt-token-" + Date.now();
-
+  const result = await response.json();
+  
+  // For signup, we don't get a token, so we'll return the user and a placeholder token
+  // The user will need to login after signup
   return {
-    user: mockUser,
-    token: mockToken,
+    user: result.user,
+    token: '', // No token on signup, user needs to login
   };
 }
 

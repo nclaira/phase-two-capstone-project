@@ -21,7 +21,7 @@ export default function FeedPage() {
     }
   }, [user]);
 
-  const loadFeed = () => {
+  const loadFeed = async () => {
     if (!user) return;
 
     const followingList = getFollowing(user.id);
@@ -32,19 +32,24 @@ export default function FeedPage() {
       return; 
     }
 
-    const allPosts = getAllPosts();
+    try {
+      const allPosts = await getAllPosts();
 
-    const feedPosts = allPosts.filter((post) =>
-      followingList.includes(post.authorId)
-    );
+      const feedPosts = allPosts.filter((post) =>
+        followingList.includes(post.authorId)
+      );
 
-    feedPosts.sort(
-      (a, b) =>
-        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-    );
+      feedPosts.sort(
+        (a, b) =>
+          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      );
 
-    setPosts(feedPosts);
-    setIsLoading(false);
+      setPosts(feedPosts);
+    } catch (error) {
+      console.error('Error loading feed:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const formatDate = (dateString: string) => {
