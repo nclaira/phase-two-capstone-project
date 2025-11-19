@@ -73,7 +73,7 @@ capstone/-
 -│   │   ├── sign-up/
 -│   │   │   └── -page.tsx
 -│   │   ├── tags-/-
--│   │   │   └── [tag]/-
+-│   │   │   └── [tag]/
 -│   │   │       └── page.tsx
 -│   │   ├── favicon.ico
 -│   │   ├── globals.css
@@ -231,7 +231,7 @@ Visit `http://localhost:3000/api/test-db` to test MongoDB connection and view da
 ## screenshots
 
 
-## Write Page
+## Home Page
 ![Home page](capstone/public/images/home_pg.png)
 
 
