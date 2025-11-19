@@ -230,14 +230,19 @@ Visit `http://localhost:3000/api/test-db` to test MongoDB connection and view da
 
 ## screenshots
 
+
+## Write Page
 ![Home page](capstone/public/images/home_pg.png)
 
 
+## signup page
 ![signup page](capstone/public/images/signup_pg.png)
 
 
+## login page
 ![login page](capstone/public/images/login_pg.png)
 
 
+## Write Page
 ![Write Page](capstone/public/images/write_pg.png)
 
