@@ -48,7 +48,7 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-r from-teal-700 to-cyan-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             </Link>
             <Link
-              href="/contact"
+              href="/about"
               className="rounded-xl border-2 border-teal-600 bg-white px-8 py-4 text-lg font-semibold text-teal-600 transition-all duration-300 hover:bg-teal-50 hover:scale-105 hover:shadow-lg"
             >
               Learn More

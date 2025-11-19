@@ -9,7 +9,7 @@ export interface Comment {
   createdAt: string; 
   updatedAt: string;
   likes?: number; 
-
+}
 
 export function getCommentsByPostId(postId: string): Comment[] {
   if (typeof window === "undefined") return [];

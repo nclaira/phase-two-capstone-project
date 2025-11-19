@@ -168,6 +168,7 @@ export default function PostDetailPage() {
           )}
 
           {!isLoading && post && (
+            <>
             <article className="rounded-2xl bg-white p-8 shadow-lg">
           
               <Link
@@ -293,7 +294,7 @@ export default function PostDetailPage() {
               )}
             </article>
 
-            {post && <CommentsSection postId={post.id} />}
+            <CommentsSection postId={post.id} />
 
             {recommendedPosts.length > 0 && (
               <div className="mt-12">
@@ -342,6 +343,7 @@ export default function PostDetailPage() {
                 </div>
               </div>
             )}
+            </>
           )}
         </div>
       </Container>
