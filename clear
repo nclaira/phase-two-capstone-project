@@ -1,0 +1,23 @@
+[33mcommit 05dc0d3f7fb08468eeb002e52807ead4775137d6[m
+Author: nclaira <nclaire981@gmail.com>
+Date:   Wed Nov 19 23:03:28 2025 +0200
+
+    install mongoose bcryptjs and --save-dev @types/bcryptjs--save-dev @types/bcryptjs
+
+[33mcommit 45403a437e4cf812780b23b6f901335e85b5b9a7[m
+Author: nclaira <nclaire981@gmail.com>
+Date:   Wed Nov 19 19:45:14 2025 +0200
+
+    resolve Turbopack build error by removing jodit CSS imports
+
+[33mcommit 93ba56d1f04ca80c9ec76fe4f09351c70a1e58d9[m
+Author: nclaira <nclaire981@gmail.com>
+Date:   Tue Nov 18 23:07:47 2025 +0200
+
+    create draft page and Install @tanstack/react-query
+
+[33mcommit 7ab6041e1ac991bdef2f6d2df1b1061327fdd2f6[m
+Author: nclaira <nclaire981@gmail.com>
+Date:   Sun Nov 16 09:45:19 2025 +0200
+
+    set up capstone next app

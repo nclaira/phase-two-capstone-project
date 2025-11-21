@@ -1,24 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { GeistSans, GeistMono } from 'geist/font';
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AuthProviderWrapper from "@/components/AuthProvider";
 import QueryProvider from "@/components/QueryProvider";
 import { defaultMetadata } from '../app/metadata';
-import { Inter } from 'next/font/google';
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = defaultMetadata;
 
@@ -28,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} scroll-smooth`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -37,9 +24,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body
-        className={`${inter.className} ${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
-      >
+      <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans min-h-screen flex flex-col antialiased`}>
         <QueryProvider>
           <AuthProviderWrapper>
             <Header />
