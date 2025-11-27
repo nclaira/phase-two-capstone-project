@@ -123,6 +123,7 @@ capstone/-
 -│   │   │   ├── signup_page.png
 -│   │   │   ├── login_page.png
 -│   │   │   ├── write_page.png
+-│   │   │   └── posts_page.png
 -├── .env.local
 -├── eslint.config.mjs
 -├── next.config.ts
