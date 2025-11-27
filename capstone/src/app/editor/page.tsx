@@ -38,6 +38,7 @@ function EditorContent() {
   const [content, setContent] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [tags, setTags] = useState("");
+  const [featuredImage, setFeaturedImage] = useState("");
   const [currentDraft, setCurrentDraft] = useState<DraftPost | null>(null);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -51,6 +52,7 @@ function EditorContent() {
       setContent(editingPost.content);
       setExcerpt(editingPost.excerpt || "");
       setTags(editingPost.tags?.join(", ") || "");
+      setFeaturedImage(editingPost.featuredImage || "");
     } else if (draftId) {
     
       const draft = getDraftById(draftId);
@@ -60,6 +62,7 @@ function EditorContent() {
         setContent(draft.content);
         setExcerpt(draft.excerpt || "");
         setTags(draft.tags?.join(", ") || "");
+        setFeaturedImage(draft.featuredImage || "");
       }
     }
   }, [postId, editingPost, draftId, user]);
@@ -73,6 +76,7 @@ function EditorContent() {
       content: content.trim(),
       excerpt: excerpt.trim(),
       tags: tags.split(",").map((tag) => tag.trim()).filter(Boolean),
+      featuredImage: featuredImage,
       createdAt: currentDraft?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -128,6 +132,7 @@ function EditorContent() {
               content,
               excerpt: excerpt || content.substring(0, 150) + "...",
               tags: tags.split(",").map((tag) => tag.trim()).filter(Boolean),
+              featuredImage: featuredImage || undefined,
               status: "published",
             },
           },
@@ -155,6 +160,7 @@ function EditorContent() {
             authorName: user.name,
             authorEmail: user.email,
             tags: tags.split(",").map((tag) => tag.trim()).filter(Boolean),
+            featuredImage: featuredImage || undefined,
             status: "published",
           },
           {
@@ -196,6 +202,21 @@ function EditorContent() {
 
   const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
+  }, []);
+
+  const handleImageUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setFeaturedImage(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, []);
+
+  const handleRemoveImage = useCallback(() => {
+    setFeaturedImage("");
   }, []);
 
   return (
@@ -268,6 +289,50 @@ function EditorContent() {
 
               <div className="mb-6">
                 <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  Featured Image (optional)
+                </label>
+                {featuredImage ? (
+                  <div className="space-y-4">
+                    <div className="relative">
+                      <img
+                        src={featuredImage}
+                        alt="Featured image preview"
+                        className="h-48 w-full rounded-lg object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleRemoveImage}
+                        className="absolute right-2 top-2 rounded-full bg-red-500 p-2 text-white hover:bg-red-600"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center w-full">
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-lg cursor-pointer bg-slate-50 hover:bg-slate-100">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <svg className="w-8 h-8 mb-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        <p className="mb-2 text-sm text-slate-500">
+                          <span className="font-semibold">Click to upload</span> or drag and drop
+                        </p>
+                        <p className="text-xs text-slate-500">PNG, JPG or GIF (MAX. 5MB)</p>
+                      </div>
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                      />
+                    </label>
+                  </div>
+                )}
+              </div>
+
+              <div className="mb-6">
+                <label className="mb-2 block text-sm font-semibold text-slate-700">
                   Content *
                 </label>
                 <RichTextEditor value={content} onChange={setContent} />
@@ -303,6 +368,13 @@ function EditorContent() {
               {showPreview && (
                 <div className="mt-8 rounded-lg border border-slate-200 bg-slate-50 p-6">
                   <h2 className="mb-4 text-2xl font-bold text-slate-800">Preview</h2>
+                  {featuredImage && (
+                    <img
+                      src={featuredImage}
+                      alt="Featured image"
+                      className="mb-4 h-48 w-full rounded-lg object-cover"
+                    />
+                  )}
                   <h3 className="mb-2 text-xl font-bold text-slate-800">{title || "Untitled"}</h3>
                   {excerpt && (
                     <p className="mb-4 text-slate-600 italic">{excerpt}</p>

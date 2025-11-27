@@ -4,6 +4,7 @@ export interface DraftPost {
   content: string; 
   excerpt?: string; 
   tags?: string[]; 
+  featuredImage?: string;
   createdAt: string; 
   updatedAt: string; 
 }
@@ -57,6 +58,7 @@ export function createNewDraft(): DraftPost {
     content: "",
     excerpt: "",
     tags: [],
+    featuredImage: "",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
