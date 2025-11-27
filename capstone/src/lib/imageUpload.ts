@@ -5,35 +5,36 @@ export interface UploadResult {
 }
 
 export async function uploadImage(file: File): Promise<UploadResult> {
-  await new Promise((resolve) => setTimeout(resolve, 1500));
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
 
-  return new Promise((resolve) => {
-    const reader = new FileReader();
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
 
-    reader.onload = (e) => {
-      const dataUrl = e.target?.result as string;
+    if (!response.ok) {
+      throw new Error('Upload failed');
+    }
 
-      resolve({
-        url: dataUrl, 
-        success: true,
-      });
+    const data = await response.json();
+    
+    return {
+      url: data.url,
+      success: data.success,
+      error: data.error,
     };
-
-    reader.onerror = () => {
-      resolve({
-        url: "",
-        success: false,
-        error: "Failed to read image file",
-      });
+  } catch (error) {
+    return {
+      url: "",
+      success: false,
+      error: "Failed to upload image",
     };
-
-
-    reader.readAsDataURL(file);
-  });
+  }
 }
 
 export function validateImageFile(file: File): { valid: boolean; error?: string } {
- 
   const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"];
   if (!validTypes.includes(file.type)) {
     return {
@@ -42,11 +43,11 @@ export function validateImageFile(file: File): { valid: boolean; error?: string 
     };
   }
 
-  const maxSize = 5 * 1024 * 1024; 
+  const maxSize = 10 * 1024 * 1024; // 10MB for cloud storage
   if (file.size > maxSize) {
     return {
       valid: false,
-      error: "Image size must be less than 5MB",
+      error: "Image size must be less than 10MB",
     };
   }
 
