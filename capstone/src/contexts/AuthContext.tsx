@@ -39,8 +39,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       saveAuthData(loggedInUser, token);
       setUser(loggedInUser);
-      
-      return { success: true };
     } catch (error) {
       console.error('Login error:', error);
       throw error;

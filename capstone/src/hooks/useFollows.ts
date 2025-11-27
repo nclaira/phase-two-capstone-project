@@ -76,14 +76,14 @@ export function useToggleFollow() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       followerId,
       followingId,
     }: {
       followerId: string;
       followingId: string;
     }) => {
-      return toggleFollow(followerId, followingId);
+      return Promise.resolve(toggleFollow(followerId, followingId));
     },
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({

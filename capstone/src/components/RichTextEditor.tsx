@@ -2,7 +2,7 @@
 
 import { useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
-import type { IJodit } from "jodit-react";
+// import type { IJodit } from "jodit-react";
 
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
@@ -18,7 +18,7 @@ export default function RichTextEditor({
   placeholder = "Start writing your story...",
 }: RichTextEditorProps) {
   
-  const editorRef = useRef<IJodit | null>(null);
+  const editorRef = useRef<any>(null);
 
   const config = useMemo(
     () => ({
@@ -58,16 +58,12 @@ export default function RichTextEditor({
         insertImageAsBase64URI: true, 
       },
 
-      link: {
-        openInNewTab: true, 
-      },
-
       spellcheck: true,
 
       removeEmptyBlocks: true,
 
       showToolbar: true,
-    }),
+    } as any),
     [placeholder]
   );
 

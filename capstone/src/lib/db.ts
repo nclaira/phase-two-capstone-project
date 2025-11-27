@@ -24,7 +24,7 @@ if (!global.mongoose) {
 
 async function connectDB(): Promise<typeof mongoose> {
   if (cached.conn) {
-    console.log('✅ Using existing MongoDB connection');
+    console.log('Using existing MongoDB connection');
     return cached.conn;
   }
 
@@ -33,15 +33,15 @@ async function connectDB(): Promise<typeof mongoose> {
       bufferCommands: false,
     };
 
-    console.log('🔄 Connecting to MongoDB...');
-    console.log('📍 MongoDB URI:', MONGODB_URI.replace(/\/\/.*@/, '//***:***@')); // Hide credentials in logs
+    console.log('Connecting to MongoDB...');
+    console.log('MongoDB URI:', MONGODB_URI.replace(/\/\/.*@/, '//***:***@')); // Hide credentials in logs
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      console.log('✅ MongoDB connected successfully');
-      console.log('📊 Database:', mongoose.connection.db?.databaseName);
+      console.log('MongoDB connected successfully');
+      console.log('Database:', mongoose.connection.db?.databaseName);
       return mongoose;
     }).catch((error) => {
-      console.error('❌ MongoDB connection error:', error.message);
+      console.error('MongoDB connection error:', error.message);
       throw error;
     });
   }
@@ -50,7 +50,7 @@ async function connectDB(): Promise<typeof mongoose> {
     cached.conn = await cached.promise;
   } catch (e) {
     cached.promise = null;
-    console.error('❌ Failed to connect to MongoDB:', e);
+    console.error('Failed to connect to MongoDB:', e);
     throw e;
   }
 

@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 
 interface SearchBarProps {
   placeholder?: string;
-  onSearch?: (query: string) => void; 
+  onSearch?: (query: string) => void;
+  className?: string;
 }
 
 export default function SearchBar({

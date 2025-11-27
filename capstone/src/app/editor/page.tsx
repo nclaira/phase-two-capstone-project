@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import Container from "@/components/Container";
@@ -22,7 +22,7 @@ const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
   ),
 });
 
-export default function EditorPage() {
+function EditorContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const draftId = searchParams.get("draft");
@@ -73,6 +73,7 @@ export default function EditorPage() {
       content: content.trim(),
       excerpt: excerpt.trim(),
       tags: tags.split(",").map((tag) => tag.trim()).filter(Boolean),
+      createdAt: currentDraft?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
@@ -317,5 +318,26 @@ export default function EditorPage() {
         </Container>
       </div>
     </ProtectedRoute>
+  );
+}
+
+export default function EditorPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-white to-teal-50/30 py-16">
+        <Container>
+          <div className="mx-auto max-w-5xl">
+            <div className="flex h-96 items-center justify-center">
+              <div className="text-center">
+                <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-teal-600 border-t-transparent"></div>
+                <p className="text-slate-600">Loading editor...</p>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </div>
+    }>
+      <EditorContent />
+    </Suspense>
   );
 }

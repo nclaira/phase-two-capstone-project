@@ -45,8 +45,8 @@ export function useCreateComment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (commentData: Omit<Comment, "id" | "createdAt" | "updatedAt">) => {
-      return createComment(commentData);
+    mutationFn: async (commentData: Omit<Comment, "id" | "createdAt" | "updatedAt">) => {
+      return Promise.resolve(createComment(commentData));
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
@@ -66,8 +66,8 @@ export function useUpdateComment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, updates }: { id: string; updates: Partial<Comment> }) => {
-      return updateComment(id, updates);
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<Comment> }) => {
+      return Promise.resolve(updateComment(id, updates));
     },
     onSuccess: (data) => {
       if (data) {
@@ -85,8 +85,8 @@ export function useDeleteComment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => {
-      return deleteComment(id);
+    mutationFn: async (id: string) => {
+      return Promise.resolve(deleteComment(id));
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: commentKeys.all });
@@ -98,10 +98,10 @@ export function useLikeComment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => {
+    mutationFn: async (id: string) => {
       likeComment(id);
       
-      return id;
+      return Promise.resolve(id);
     },
     onSuccess: (id) => {
       queryClient.invalidateQueries({ queryKey: commentKeys.all });

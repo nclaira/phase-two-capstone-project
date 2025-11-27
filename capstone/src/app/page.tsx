@@ -54,64 +54,9 @@ export default function Home() {
               Learn More
             </Link>
           </div>
-        </div>
-
-        
-        <div className="mx-auto mt-24 max-w-7xl">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-4xl font-bold text-slate-800 md:text-5xl">
-              Powerful Features
-            </h2>
-            <p className="text-lg text-slate-600">
-              Everything you need to create amazing content
-            </p>
-          </div>
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            
-
-            <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-50 p-8 shadow-lg shadow-teal-100/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-teal-200/50">
-              <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-cyan-400 text-2xl text-white shadow-lg">
-                ✍️
-              </div>
-              <h3 className="mb-3 text-2xl font-bold text-slate-800">
-                Rich Text Editor
-              </h3>
-              <p className="text-slate-600 leading-relaxed">
-                Create beautiful content with our powerful rich text editor
-                supporting formatting, images, code blocks, and more.
-              </p>
-            </div>
-
-           
-            <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-50 to-rose-50 p-8 shadow-lg shadow-orange-100/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-orange-200/50">
-              <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-rose-400 text-2xl text-white shadow-lg">
-                💬
-              </div>
-              <h3 className="mb-3 text-2xl font-bold text-slate-800">
-                Social Features
-              </h3>
-              <p className="text-slate-600 leading-relaxed">
-                Engage with readers through comments, likes, claps, and following
-                your favorite authors for a vibrant community.
-              </p>
-            </div>
+        </div>       
 
             
-            <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 p-8 shadow-lg shadow-purple-100/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-purple-200/50">
-              <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-pink-400 text-2xl text-white shadow-lg">
-                📱
-              </div>
-              <h3 className="mb-3 text-2xl font-bold text-slate-800">
-                Responsive Design
-              </h3>
-              <p className="text-slate-600 leading-relaxed">
-                Your content looks stunning on all devices - desktop, tablet, and
-                mobile with perfect responsive layouts.
-              </p>
-            </div>
-          </div>
-        </div>
-
        
         {latestPosts.length > 0 && (
           <div className="mx-auto mt-24 max-w-7xl">

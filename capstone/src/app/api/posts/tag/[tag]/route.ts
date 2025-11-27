@@ -5,12 +5,12 @@ import Post from '@/models/Post';
 // GET - Get posts by tag
 export async function GET(
   request: NextRequest,
-  { params }: { params: { tag: string } }
+  { params }: { params: Promise<{ tag: string }> }
 ) {
   try {
     await connectDB();
 
-    const { tag } = params;
+    const { tag } = await params;
 
     const posts = await Post.find({
       tags: { $in: [new RegExp(tag, 'i')] },

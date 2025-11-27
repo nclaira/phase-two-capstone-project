@@ -6,12 +6,12 @@ import mongoose from 'mongoose';
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('📝 Signup request received');
+    console.log('Signup request received');
     await connectDB();
-    console.log('✅ Database connected, processing signup...');
+    console.log('Database connected, processing signup...');
 
     const { name, email, password } = await request.json();
-    console.log('👤 Signing up user:', email);
+    console.log('Signing up user:', email);
 
     // Validate input
     if (!name || !email || !password) {
@@ -47,13 +47,13 @@ export async function POST(request: NextRequest) {
       password: hashedPassword,
     });
 
-    console.log('✅ User created successfully in MongoDB');
-    console.log('📋 User ID:', user._id.toString());
-    console.log('📋 User Email:', user.email);
+    console.log('User created successfully in MongoDB');
+    console.log('User ID:', user._id.toString());
+    console.log('User Email:', user.email);
     const dbName = mongoose.connection.db?.databaseName || 'unknown';
-    console.log('📋 Database:', dbName);
-    console.log('📋 Collection:', User.collection.name);
-    console.log('📋 Full Collection Path:', `${dbName}.${User.collection.name}`);
+    console.log('Database:', dbName);
+    console.log('Collection:', User.collection.name);
+    console.log('Full Collection Path:', `${dbName}.${User.collection.name}`);
 
     // Return user data (without password)
     const userData = {

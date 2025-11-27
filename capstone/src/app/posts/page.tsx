@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Container from "@/components/Container";
 import { usePosts } from "@/hooks/usePosts";
@@ -9,7 +9,7 @@ import LoadingSkeleton from "@/components/LoadingSkeleton";
 import SearchBar from "@/components/memoized/SearchBar";
 import { searchPosts } from "@/lib/search";
 
-export default function PostsPage() {
+function PostsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('q') || '';
@@ -24,8 +24,8 @@ export default function PostsPage() {
     if (query.trim()) {
       setIsSearching(true);
 
-      const timer = setTimeout(() => {
-        const results = searchPosts(query);
+      const timer = setTimeout(async () => {
+        const results = await searchPosts(query);
         setSearchResults(results);
         setIsSearching(false);
       }, 300);
@@ -64,12 +64,6 @@ export default function PostsPage() {
           <div className="mb-12 max-w-2xl mx-auto">
             <SearchBar 
               placeholder="Search posts by title, content, or author..."
-              onSearch={(searchQuery) => {
-                const url = searchQuery.trim() 
-                  ? `/posts?q=${encodeURIComponent(searchQuery)}` 
-                  : '/posts';
-                router.push(url);
-              }}
             />
           </div>
 
@@ -122,6 +116,27 @@ export default function PostsPage() {
         </div>
       </Container>
     </div>
+  );
+}
+
+export default function PostsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-white to-teal-50/30 py-16">
+        <Container>
+          <div className="mx-auto max-w-6xl">
+            <div className="flex h-96 items-center justify-center">
+              <div className="text-center">
+                <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-teal-600 border-t-transparent"></div>
+                <p className="text-slate-600">Loading posts...</p>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </div>
+    }>
+      <PostsContent />
+    </Suspense>
   );
 }
 
