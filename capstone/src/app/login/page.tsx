@@ -38,7 +38,9 @@ export default function LoginPage() {
       await login(email, password);
       router.push("/editor");
     } catch (err) {
-      setError("Login failed. Please check your credentials.");
+      console.error('Login error:', err);
+      const errorMessage = err instanceof Error ? err.message : "Login failed. Please check your credentials.";
+      setError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

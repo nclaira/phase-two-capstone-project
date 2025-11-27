@@ -52,7 +52,9 @@ export default function SignupPage() {
       await signup(name, email, password);
       router.push("/login");
     } catch (err) {
-      setError("Signup failed. Please try again.");
+      console.error('Signup error:', err);
+      const errorMessage = err instanceof Error ? err.message : "Signup failed. Please try again.";
+      setError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
