@@ -118,7 +118,7 @@ capstone/-
 -│       ├── Post.ts
 -│       └── User.ts
 -├── public/
--│   ├── file.svg
+-│   ├── signup_page.png
 -│   ├── globe.svg
 -│   ├── next.svg
 -│   ├── vercel.svg
@@ -236,7 +236,7 @@ Visit `http://localhost:3000/api/test-db` to test MongoDB connection and view da
 
 
 ## signup page
-![signup page](capstone/public/images/signup_pg.png)
+![signup page](capstone/public/images/signup_page.png)
 
 
 ## login page
