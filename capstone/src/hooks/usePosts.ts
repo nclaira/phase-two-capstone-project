@@ -132,18 +132,27 @@ export function useIncrementPostViews() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => {
-      incrementPostViews(id);
-      return getPostById(id); 
-    },
-    onSuccess: (data, id) => {
-     
-      if (data) {
-        queryClient.setQueryData(postKeys.detail(id), data);
-        if (data.slug) {
-          queryClient.setQueryData(postKeys.bySlug(data.slug), data);
-        }
+    mutationFn: async (id: string) => {
+      const response = await fetch(`/api/posts/${id}/views`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to increment views');
       }
+
+      return response.json();
+    },
+    onSuccess: (updatedPost, id) => {
+      // Update cache with new post data
+      queryClient.setQueryData(postKeys.detail(id), updatedPost);
+      if (updatedPost.slug) {
+        queryClient.setQueryData(postKeys.bySlug(updatedPost.slug), updatedPost);
+      }
+      queryClient.invalidateQueries({ queryKey: postKeys.lists() });
     },
   });
 }

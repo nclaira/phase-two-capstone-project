@@ -120,8 +120,20 @@ export function useToggleLike() {
       return response.json();
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['hasLiked', variables.postId, variables.userId] });
-      queryClient.invalidateQueries({ queryKey: ['post', variables.postId] });
+      // Update the hasLiked cache
+      queryClient.setQueryData(['hasLiked', variables.postId, variables.userId], data.liked);
+      
+      // Update post data if returned
+      if (data.post) {
+        queryClient.setQueryData(['posts', 'detail', variables.postId], data.post);
+        if (data.post.slug) {
+          queryClient.setQueryData(['posts', 'detail', 'slug', data.post.slug], data.post);
+        }
+      }
+      
+      // Invalidate lists to refresh
+      queryClient.invalidateQueries({ queryKey: ['posts', 'list'] });
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
     },
   });
 }

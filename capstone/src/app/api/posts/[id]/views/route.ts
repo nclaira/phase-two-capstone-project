@@ -1,21 +1,28 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import Post from '@/models/Post';
+import mongoose from 'mongoose';
 
-export async function GET(
+export async function POST(
   request: NextRequest,
-  context: { params: Promise<{ slug: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { slug } = await context.params;
-
   try {
     await connectDB();
+    const { id } = await context.params;
 
-    const post = await Post.findOne({ slug, status: 'published' }).lean();
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ error: 'Invalid post ID' }, { status: 400 });
+    }
 
+    const post = await Post.findById(id);
     if (!post) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
+
+    // Increment views
+    post.views = (post.views || 0) + 1;
+    await post.save();
 
     const formattedPost = {
       id: post._id.toString(),
@@ -36,11 +43,10 @@ export async function GET(
     };
 
     return NextResponse.json(formattedPost);
-  } catch (error: unknown) {
-    console.error('Get post by slug error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Failed to fetch post';
+  } catch (error) {
+    console.error('Error incrementing views:', error);
     return NextResponse.json(
-      { error: errorMessage },
+      { error: 'Failed to increment views' },
       { status: 500 }
     );
   }

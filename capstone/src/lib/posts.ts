@@ -166,9 +166,15 @@ export function hardDeletePost(id: string): boolean {
 // Increment post views
 export async function incrementPostViews(id: string): Promise<void> {
   try {
-    const post = await getPostById(id);
-    if (post) {
-      await updatePost(id, { views: (post.views || 0) + 1 });
+    const response = await fetch(`/api/posts/${id}/views`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to increment views');
     }
   } catch (error) {
     console.error('Error incrementing post views:', error);

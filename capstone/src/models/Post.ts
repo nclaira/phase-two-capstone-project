@@ -15,6 +15,7 @@ export interface IPost extends Document {
   status: 'published' | 'draft';
   views: number;
   likes: number;
+  likedBy: mongoose.Types.ObjectId[];
 }
 
 const PostSchema: Schema = new Schema(
@@ -74,6 +75,11 @@ const PostSchema: Schema = new Schema(
     likes: {
       type: Number,
       default: 0,
+    },
+    likedBy: {
+      type: [Schema.Types.ObjectId],
+      ref: 'User',
+      default: [],
     },
   },
   {

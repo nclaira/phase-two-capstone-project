@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -37,6 +37,7 @@ export default function PostDetailPage() {
   );
 
   const [recommendedPosts, setRecommendedPosts] = useState<Post[]>([]);
+  const viewsIncrementedRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (post?.id) {
@@ -52,10 +53,11 @@ export default function PostDetailPage() {
   }, [post?.id]);
 
   useEffect(() => {
-    if (post?.id) {
+    if (post?.id && viewsIncrementedRef.current !== post.id) {
+      viewsIncrementedRef.current = post.id;
       incrementViewsMutation.mutate(post.id);
     }
-  }, [post?.id, incrementViewsMutation]);
+  }, [post?.id]);
 
   const handleDelete = async () => {
     if (!post) return;
@@ -84,25 +86,21 @@ export default function PostDetailPage() {
     });
   };
 
-  const isAuthor = post && user && post.authorId === user.id;
-  const canFollow = post && user && post.authorId !== user.id && isAuthenticated;
+  const isAuthor = post && user && post.authorId.toString() === user.id.toString();
+  const canFollow = post && user && post.authorId.toString() !== user.id.toString() && isAuthenticated;
+  const canLike = post && user && post.authorId.toString() !== user.id.toString() && isAuthenticated;
 
   const handleLike = () => {
-    if (!user || !post) return;
+    if (!user || !post || !canLike) return;
 
     toggleLikeMutation.mutate(
       { postId: post.id, userId: user.id },
       {
-        onSuccess: () => {
-          if (post) {
-            const newLikesCount = isLiked
-              ? Math.max(0, (post.likes || 0) - 1)
-              : (post.likes || 0) + 1;
-            updatePostMutation.mutate({
-              id: post.id,
-              updates: { likes: newLikesCount },
-            });
-          }
+        onSuccess: (data) => {
+          // Like toggled successfully
+        },
+        onError: (error) => {
+          console.error('Failed to toggle like:', error);
         },
       }
     );
@@ -234,19 +232,24 @@ export default function PostDetailPage() {
                   )}
                 </div>
 
-                {isAuthenticated && user && (
+                {canLike ? (
                   <button
                     onClick={handleLike}
                     disabled={toggleLikeMutation.isPending}
                     className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 ${
                       isLiked
-                        ? "bg-teal-100 text-teal-700"
-                        : "bg-slate-100 text-slate-700 hover:bg-teal-100 hover:text-teal-700"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-slate-100 text-slate-700 hover:bg-red-100 hover:text-red-700"
                     } disabled:opacity-50`}
                   >
-                    <span>❤️</span>
+                    <span>{isLiked ? "❤️" : "🤍"}</span>
                     <span>{post?.likes || 0}</span>
                   </button>
+                ) : (
+                  <div className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold bg-slate-100 text-slate-700">
+                    <span>❤️</span>
+                    <span>{post?.likes || 0}</span>
+                  </div>
                 )}
 
                 {canFollow && (
