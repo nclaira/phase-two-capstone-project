@@ -243,5 +243,9 @@ Visit `http://localhost:3000/api/test-db` to test MongoDB connection and view da
 
 
 ## Write Page
-![Write Page](capstone/public/images/write_pg.png)
+![Write Page](capstone/public/images/write_page.png)
+
+
+## posts Page
+![Write Page](capstone/public/images/posts_page.png)
 
