@@ -120,8 +120,9 @@ capstone/-
 -│   ├── public/
 -│   │   ├── images/
 -│   │   │   ├── home_page.png
--│   │   │   └── signup_page.png
+-│   │   │   ├── signup_page.png
 -│   │   │   ├── login_page.png
+-│   │   │   ├── write_page.png
 -├── .env.local
 -├── eslint.config.mjs
 -├── next.config.ts
