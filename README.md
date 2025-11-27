@@ -117,12 +117,10 @@ capstone/-
 -│   └── models/
 -│       ├── Post.ts
 -│       └── User.ts
--├── public/
--│   ├── signup_page.png
--│   ├── globe.svg
--│   ├── next.svg
--│   ├── vercel.svg
--│   └── window.svg
+-│   ├── public/
+-│   │   ├── images/
+-│   │   │   ├── home_page.png
+-│   │   │   └── signup_page.png
 -├── .env.local
 -├── eslint.config.mjs
 -├── next.config.ts
@@ -232,7 +230,7 @@ Visit `http://localhost:3000/api/test-db` to test MongoDB connection and view da
 
 
 ## Home Page
-![Home page](capstone/public/images/home_pg.png)
+![Home page](capstone/public/images/home_page.png)
 
 
 ## signup page
