@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,7 +9,7 @@ import SearchBar from "@/components/SearchBar";
 import { searchPosts } from "@/lib/search";
 import { type Post } from "@/lib/posts";
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const queryParam = searchParams.get("q") || "";
 
@@ -192,6 +192,27 @@ export default function SearchPage() {
         </div>
       </Container>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-white to-teal-50/30 py-16">
+        <Container>
+          <div className="mx-auto max-w-6xl">
+            <div className="flex h-96 items-center justify-center">
+              <div className="text-center">
+                <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-teal-600 border-t-transparent"></div>
+                <p className="text-slate-600">Loading search...</p>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </div>
+    }>
+      <SearchContent />
+    </Suspense>
   );
 }
 
