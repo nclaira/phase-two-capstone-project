@@ -121,6 +121,7 @@ capstone/-
 -│   │   ├── images/
 -│   │   │   ├── home_page.png
 -│   │   │   └── signup_page.png
+-│   │   │   ├── login_page.png
 -├── .env.local
 -├── eslint.config.mjs
 -├── next.config.ts
@@ -238,7 +239,7 @@ Visit `http://localhost:3000/api/test-db` to test MongoDB connection and view da
 
 
 ## login page
-![login page](capstone/public/images/login_pg.png)
+![login page](capstone/public/images/login_page.png)
 
 
 ## Write Page
