@@ -86,9 +86,9 @@ export default function PostDetailPage() {
     });
   };
 
-  const isAuthor = post && user && post.authorId.toString() === user.id.toString();
-  const canFollow = post && user && post.authorId.toString() !== user.id.toString() && isAuthenticated;
-  const canLike = post && user && post.authorId.toString() !== user.id.toString() && isAuthenticated;
+  const isAuthor = post && user && post.authorId?.toString() === user.id?.toString();
+  const canFollow = post && user && post.authorId?.toString() !== user.id?.toString() && isAuthenticated;
+  const canLike = post && user && post.authorId?.toString() !== user.id?.toString() && isAuthenticated;
 
   const handleLike = () => {
     if (!user || !post || !canLike) return;

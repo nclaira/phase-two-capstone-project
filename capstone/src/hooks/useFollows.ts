@@ -23,9 +23,14 @@ export const followKeys = {
 export function useIsFollowing(followerId: string | null, followingId: string | null) {
   return useQuery({
     queryKey: followKeys.isFollowing(followerId || "", followingId || ""),
-    queryFn: () => {
+    queryFn: async () => {
       if (!followerId || !followingId) return false;
-      return isFollowing(followerId, followingId);
+      
+      const response = await fetch(`/api/users/${followerId}/is-following?followingId=${followingId}`);
+      if (!response.ok) return false;
+      
+      const data = await response.json();
+      return data.isFollowing;
     },
     enabled: !!followerId && !!followingId,
   });
@@ -83,12 +88,26 @@ export function useToggleFollow() {
       followerId: string;
       followingId: string;
     }) => {
-      return Promise.resolve(toggleFollow(followerId, followingId));
+      const response = await fetch(`/api/users/${followerId}/follow`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ followingId }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to toggle follow');
+      }
+      
+      return response.json();
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: followKeys.isFollowing(variables.followerId, variables.followingId),
-      });
+      queryClient.setQueryData(
+        followKeys.isFollowing(variables.followerId, variables.followingId),
+        data.isFollowing
+      );
+      
       queryClient.invalidateQueries({
         queryKey: followKeys.following(variables.followerId),
       });

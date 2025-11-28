@@ -46,8 +46,7 @@ function EditorContent() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (postId && editingPost && user && editingPost.authorId === user.id) {
-
+    if (postId && editingPost && user && editingPost.authorId.toString() === user.id.toString()) {
       setTitle(editingPost.title);
       setContent(editingPost.content);
       setExcerpt(editingPost.excerpt || "");
@@ -119,6 +118,11 @@ function EditorContent() {
 
     if (!user) {
       setMessage("You must be logged in to publish");
+      return;
+    }
+
+    if (editingPost && editingPost.authorId.toString() !== user.id.toString()) {
+      setMessage("You can only edit your own posts");
       return;
     }
 

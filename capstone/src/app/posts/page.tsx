@@ -32,19 +32,16 @@ function PostsContent() {
       
       return () => clearTimeout(timer);
     } else {
-      setSearchResults(allPosts);
       setIsSearching(false);
     }
-  }, [query, allPosts]);
+  }, [query]);
 
   useEffect(() => {
     setQuery(searchQuery);
   }, [searchQuery]);
 
 
-  const memoizedPosts = useMemo(() => {
-    return query.trim() ? searchResults : allPosts;
-  }, [allPosts, searchResults, query]);
+  const displayPosts = query.trim() ? searchResults : allPosts;
 
 
   return (
@@ -87,7 +84,7 @@ function PostsContent() {
 
           {isLoading && <LoadingSkeleton variant="post" count={6} />}
 
-          {!isLoading && !isError && (query.trim() ? searchResults.length === 0 : allPosts.length === 0) && (
+          {!isLoading && !isError && displayPosts.length === 0 && (
             <div className="rounded-2xl bg-white p-12 text-center shadow-lg">
               <div className="mb-4 text-6xl">📝</div>
               <h2 className="mb-2 text-2xl font-bold text-slate-800">
@@ -106,9 +103,9 @@ function PostsContent() {
             </div>
           )}
 
-          {!isLoading && !isError && !isSearching && memoizedPosts.length > 0 && (
+          {!isLoading && !isError && !isSearching && displayPosts.length > 0 && (
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {memoizedPosts.map((post) => (
+              {displayPosts.map((post) => (
                 <PostCard key={post.id} post={post} />
               ))}
             </div>
